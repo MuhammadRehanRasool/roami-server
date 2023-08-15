@@ -27,7 +27,7 @@ SECRET_KEY = "django-insecure-xtjkf3t9escp(*p#%os&(wm#v-xc^f4@@k6h^8#8qc+59kvugk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["api.shareyourpins.com"]
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
