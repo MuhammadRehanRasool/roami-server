@@ -6,7 +6,7 @@ local_settings.py
 /media
 /env
 env
-/static
+# /static
 .vscode
 *.env
 
