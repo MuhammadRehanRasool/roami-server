@@ -58,7 +58,7 @@ def initialize_backend():
 
 
 # Call the function to initialize the backend
-initialize_backend()
+# initialize_backend()
 
 
 class GoogleAuthView(SocialLoginView):
