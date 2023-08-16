@@ -21,7 +21,7 @@ from dj_rest_auth.registration.views import SocialLoginView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from accounts.models import User, Profile, Interest
+from accounts.models import User, Profile, Interest, UserManager
 from accounts.permission import IsOwnerOrReadOnly
 from accounts.serializers import (
     CustomTokenObtainPairSerializer,
@@ -45,6 +45,14 @@ def initialize_backend():
             print("[INITIALIZATION][SUCCESS]: INTERESTS populated")
         else:
             print("[INITIALIZATION][EXISTS]: INTERESTS already populated")
+    except Exception as e:
+        print("[INITIALIZATION][ERROR]:", str(e))
+    try:
+        # Populate
+        superuser = User.objects.create_superuser(
+            email="admin@admin.com", username="admin", password="admin"
+        )
+        print("[INITIALIZATION][SUCCESS]: SUPER ADMIN added")
     except Exception as e:
         print("[INITIALIZATION][ERROR]:", str(e))
 
