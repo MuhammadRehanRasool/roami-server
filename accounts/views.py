@@ -1,4 +1,4 @@
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+# from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from django.shortcuts import render
 from django.contrib.auth import logout as django_logout
 from drf_yasg.utils import swagger_auto_schema
@@ -17,7 +17,7 @@ from rest_framework.permissions import (
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from dj_rest_auth.registration.views import SocialLoginView
+# from dj_rest_auth.registration.views import SocialLoginView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -61,17 +61,17 @@ def initialize_backend():
 initialize_backend()
 
 
-class GoogleAuthView(SocialLoginView):
-    adapter_class = GoogleOAuth2Adapter
+# class GoogleAuthView(SocialLoginView):
+#     adapter_class = GoogleOAuth2Adapter
 
-    def get_response(self):
-        response = super().get_response()
-        print(response)
-        if "access_token" in response.data:
-            refresh = RefreshToken.for_user(response.user)
-            response.data["refresh"] = str(refresh)
-            response.data["access"] = str(refresh.access_token)
-        return response
+#     def get_response(self):
+#         response = super().get_response()
+#         print(response)
+#         if "access_token" in response.data:
+#             refresh = RefreshToken.for_user(response.user)
+#             response.data["refresh"] = str(refresh)
+#             response.data["access"] = str(refresh.access_token)
+#         return response
 
 
 class GoogleAuthLogin(APIView):

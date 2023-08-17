@@ -11,9 +11,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import datetime
 import os
+
+import dj_database_url
 from pathlib import Path
 
 from django.template.context_processors import media
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,13 +41,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
+    # "allauth",
+    # "allauth.account",
+    # "allauth.socialaccount",
+    # "allauth.socialaccount.providers.google",
     "rest_framework",
-    "rest_framework.authtoken",
-    "dj_rest_auth",
+    # "rest_framework.authtoken",
+    # "dj_rest_auth",
     "django_filters",
     "accounts",
     "drf_yasg",
@@ -54,11 +57,12 @@ INSTALLED_APPS = [
     "places",
     "about",
     "taggit",
-    "django_rest_passwordreset",
+    # "django_rest_passwordreset",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -148,22 +152,31 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
 # rest framework settings
+# REST_FRAMEWORK = {
+#     # Use Django's standard `django.contrib.auth` permissions,
+#     # or allow read-only access for unauthenticated users.
+#     "NON_FIELD_ERRORS_KEY": "errors",
+#     "DEFAULT_PERMISSION_CLASSES": [
+#         "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+#     ],
+#     "DEFAULT_AUTHENTICATION_CLASSES": [
+#         "rest_framework_simplejwt.authentication.JWTAuthentication",
+#         "rest_framework.authentication.SessionAuthentication",
+#         "rest_framework.authentication.BasicAuthentication",
+#     ],
+#     # 'DEFAULT_SCHEMA_CLASS': 'drf_yasg.openapi.AutoSchema',
+#     "PAGE_SIZE": 20,
+#     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+# }
+
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    "NON_FIELD_ERRORS_KEY": "errors",
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
-    ],
-    "DEFAULT_AUTHENTICATION_CLASSES": [
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.BasicAuthentication",
-    ],
-    # 'DEFAULT_SCHEMA_CLASS': 'drf_yasg.openapi.AutoSchema',
-    "PAGE_SIZE": 20,
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    ),  #
 }
+
+
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("jwt",),
     "ACCESS_TOKEN_LIFETIME": datetime.timedelta(days=30),
@@ -171,36 +184,49 @@ SIMPLE_JWT = {
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
     "TOKEN_OBTAIN_SERIALIZER": "accounts.serializers.CustomTokenObtainPairSerializer",
 }
-SWAGGER_SETTINGS = {
-    "USE_SESSION_AUTH": False,  # Disable session authentication
-    "SECURITY_DEFINITIONS": {
-        "jwt": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header",
-        },
-    },
-}
 
 
-AUTHENTICATION_BACKENDS = (
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
-)
+# Heroku: Update database configuration from $DATABASE_URL.
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES["default"].update(db_from_env)
+
+import warnings
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+WHITENOISE_ROOT = os.path.join(BASE_DIR, "staticfiles", "root")
+warnings.filterwarnings("ignore", message="No directory at", module="whitenoise.base")
 
 
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "SCOPE": ["profile", "email"],
-        "AUTH_PARAMS": {"access_type": "online"},
-        "METHOD": "oauth2",
-        "VERIFIED_EMAIL": False,
-    }
-}
+# SWAGGER_SETTINGS = {
+#     "USE_SESSION_AUTH": False,  # Disable session authentication
+#     "SECURITY_DEFINITIONS": {
+#         "jwt": {
+#             "type": "apiKey",
+#             "name": "Authorization",
+#             "in": "header",
+#         },
+#     },
+# }
 
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = "imjuni.pythondev@gmail.com"
-EMAIL_HOST_PASSWORD = "k1GKl8X&*84L"
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+# AUTHENTICATION_BACKENDS = (
+#     "django.contrib.auth.backends.ModelBackend",
+#     # "allauth.account.auth_backends.AuthenticationBackend",
+# )
+
+
+# SOCIALACCOUNT_PROVIDERS = {
+#     "google": {
+#         "SCOPE": ["profile", "email"],
+#         "AUTH_PARAMS": {"access_type": "online"},
+#         "METHOD": "oauth2",
+#         "VERIFIED_EMAIL": False,
+#     }
+# }
+
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_HOST_USER = "imjuni.pythondev@gmail.com"
+# EMAIL_HOST_PASSWORD = "k1GKl8X&*84L"
+# EMAIL_USE_TLS = True
+# EMAIL_PORT = 587
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

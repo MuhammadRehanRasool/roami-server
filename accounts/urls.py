@@ -4,7 +4,7 @@ from .views import ProfileUpdateAPIView
 from rest_framework_simplejwt import views as jwt_views
 
 urlpatterns = [
-    path("api/auth/google/", views.GoogleAuthView.as_view(), name="google_auth"),
+    # path("api/auth/google/", views.GoogleAuthView.as_view(), name="google_auth"),
     path("account/create/", views.RegisterView.as_view()),
     path("account/login/", views.LoginView.as_view(), name="login"),
     path(

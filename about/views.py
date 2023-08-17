@@ -1,18 +1,20 @@
 from rest_framework.generics import ListAPIView
 from .models import Sections, Team, PopularLists
 from .serializers import SectionsSerializer, TeamSerializer, PopularListsSerializer
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import permission_classes, authentication_classes
 
-
+@permission_classes([AllowAny])
 class SectionsListView(ListAPIView):
     queryset = Sections.objects.all().order_by("order")
     serializer_class = SectionsSerializer
 
-
+@permission_classes([AllowAny])
 class TeamListView(ListAPIView):
     queryset = Team.objects.all().order_by("order")
     serializer_class = TeamSerializer
 
-
+@permission_classes([AllowAny])
 class PopularListView(ListAPIView):
     queryset = PopularLists.objects.all().order_by("order")[:20]
     serializer_class = PopularListsSerializer
